@@ -1,3 +1,4 @@
 [submodule "Android-XDK"]
 	path = Android-XDK
-	url = git@github.com:layerhq/Android-XDK.git
+	url = https://github.com/layerhq/Android-XDK.git
+	shallow = true
