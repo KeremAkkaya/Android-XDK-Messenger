@@ -144,6 +144,14 @@ public class LayerAuthenticationProvider implements AuthenticationProvider<Layer
         try {
             // Post request
             String url = CustomEndpoint.getEndpoint().getProviderUrl();
+            // Old identity providers had a different endpoint so do not append if one is being used
+            if (!url.endsWith("sign_in.json")) {
+                if (Log.isLoggable(Log.WARN)) {
+                    Log.w("Assuming this is a provider generated via QuickStart. Appending `authenticate` to the path");
+                }
+                url = url + "authenticate";
+            }
+            
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
             connection.setDoInput(true);
             connection.setDoOutput(true);
