@@ -2,17 +2,11 @@ package com.layer.xdk.messenger.util;
 
 import android.content.Context;
 
-import com.layer.xdk.messenger.App;
 import com.layer.sdk.LayerClient;
+import com.layer.xdk.messenger.App;
 import com.layer.xdk.ui.conversationitem.ConversationItemFormatter;
 import com.layer.xdk.ui.identity.IdentityFormatter;
 import com.layer.xdk.ui.identity.IdentityFormatterImpl;
-import com.layer.xdk.ui.message.messagetypes.CellFactory;
-import com.layer.xdk.ui.message.messagetypes.generic.GenericCellFactory;
-import com.layer.xdk.ui.message.messagetypes.location.LocationCellFactory;
-import com.layer.xdk.ui.message.messagetypes.singlepartimage.SinglePartImageCellFactory;
-import com.layer.xdk.ui.message.messagetypes.text.TextCellFactory;
-import com.layer.xdk.ui.message.messagetypes.threepartimage.ThreePartImageCellFactory;
 import com.layer.xdk.ui.util.DateFormatter;
 import com.layer.xdk.ui.util.DateFormatterImpl;
 import com.layer.xdk.ui.util.imagecache.ImageCacheWrapper;
@@ -24,12 +18,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Util {
     private static ConversationItemFormatter sConversationItemFormatter;
-    private static List<CellFactory> sCellFactories;
     private static ImageCacheWrapper sImageCacheWrapper;
     private static IdentityFormatter sIdentityFormatter;
     private static DateFormatter sDateFormatter;
@@ -39,28 +30,11 @@ public class Util {
         DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
         sImageCacheWrapper = new PicassoImageCacheWrapper(picasso);
         sConversationItemFormatter = new ConversationItemFormatter(context, layerClient,
-                getIdentityFormatter(context), timeFormat, dateFormat,
-                getCellFactories(layerClient));
+                getIdentityFormatter(context), timeFormat, dateFormat);
     }
 
     public static ConversationItemFormatter getConversationItemFormatter() {
         return sConversationItemFormatter;
-    }
-
-    public static List<CellFactory> getCellFactories(LayerClient layerClient) {
-        if (sCellFactories == null || sCellFactories.isEmpty()) {
-            sCellFactories = new ArrayList<>();
-            sCellFactories.add(new TextCellFactory());
-            sCellFactories.add(new ThreePartImageCellFactory(layerClient, sImageCacheWrapper));
-            sCellFactories.add(new SinglePartImageCellFactory(layerClient, sImageCacheWrapper));
-            sCellFactories.add(new LocationCellFactory(sImageCacheWrapper));
-            sCellFactories.add(new GenericCellFactory());
-
-            if (sConversationItemFormatter != null) {
-                sConversationItemFormatter.setCellFactories(sCellFactories);
-            }
-        }
-        return sCellFactories;
     }
 
     public static String streamToString(InputStream stream) throws IOException {

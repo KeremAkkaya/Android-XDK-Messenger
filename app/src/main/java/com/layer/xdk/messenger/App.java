@@ -6,13 +6,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.StrictMode;
 
+import com.layer.sdk.LayerClient;
 import com.layer.xdk.messenger.util.AuthenticationProvider;
 import com.layer.xdk.messenger.util.CustomEndpoint;
 import com.layer.xdk.messenger.util.LayerAuthenticationProvider;
 import com.layer.xdk.messenger.util.Log;
-import com.layer.sdk.LayerClient;
-import com.layer.xdk.ui.message.messagetypes.text.TextCellFactory;
-import com.layer.xdk.ui.message.messagetypes.threepartimage.ThreePartImageConstants;
+import com.layer.xdk.ui.message.legacy.LegacyImageConstants;
+import com.layer.xdk.ui.message.legacy.LegacyTextMessageModel;
 import com.layer.xdk.ui.util.Util;
 import com.layer.xdk.ui.util.imagecache.requesthandlers.MessagePartRequestHandler;
 import com.squareup.picasso.Picasso;
@@ -165,9 +165,9 @@ public class App extends Application {
 
                     /* Automatically download text and ThreePartImage info/preview */
                     .autoDownloadMimeTypes(Arrays.asList(
-                            TextCellFactory.MIME_TYPE,
-                            ThreePartImageConstants.MIME_TYPE_INFO,
-                            ThreePartImageConstants.MIME_TYPE_PREVIEW))
+                            LegacyTextMessageModel.MIME_TYPES.iterator().next(),
+                            LegacyImageConstants.MIME_TYPE_INFO,
+                            LegacyImageConstants.MIME_TYPE_PREVIEW))
                     .setTelemetryEnabled(telemetryEnabled);
 
             sLayerClient = generateLayerClient(sInstance, options);
@@ -210,7 +210,6 @@ public class App extends Application {
 
     private static LayerClient generateLayerClient(Context context, LayerClient.Options options) {
         String layerAppId = getLayerAppId();
-        LayerClient.setLoggingEnabled(context, true);
         if (layerAppId == null) {
             if (Log.isLoggable(Log.ERROR)) Log.e(context.getString(R.string.app_id_required));
             return null;

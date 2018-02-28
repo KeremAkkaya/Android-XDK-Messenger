@@ -218,9 +218,11 @@ public class MessagesListActivity extends AppCompatActivity {
     private void setupConversation(Conversation conversation) {
         mConversationView = mActivityMessagesListBinding.conversation;
 
-        mConversationViewModel = new ConversationViewModel(getApplicationContext(), App.getLayerClient(),
-                Util.getCellFactories(App.getLayerClient()), Util.getImageCacheWrapper(),
-                Util.getDateFormatter(getApplicationContext()), Util.getIdentityFormatter(this));
+        mConversationViewModel = new ConversationViewModel(getApplicationContext(),
+                App.getLayerClient(),
+                Util.getImageCacheWrapper(),
+                Util.getDateFormatter(getApplicationContext()),
+                Util.getIdentityFormatter(this));
 
         mConversationViewModel.getMessageItemsListViewModel().setItemClickListener(new OnItemClickListener<Message>() {
             @Override
