@@ -11,8 +11,7 @@ import com.layer.xdk.messenger.util.AuthenticationProvider;
 import com.layer.xdk.messenger.util.CustomEndpoint;
 import com.layer.xdk.messenger.util.LayerAuthenticationProvider;
 import com.layer.xdk.messenger.util.Log;
-import com.layer.xdk.ui.message.legacy.LegacyImageConstants;
-import com.layer.xdk.ui.message.legacy.LegacyTextMessageModel;
+import com.layer.xdk.ui.message.LegacyMimeTypes;
 import com.layer.xdk.ui.util.Util;
 import com.layer.xdk.ui.util.imagecache.requesthandlers.MessagePartRequestHandler;
 import com.squareup.picasso.Picasso;
@@ -165,9 +164,9 @@ public class App extends Application {
 
                     /* Automatically download text and ThreePartImage info/preview */
                     .autoDownloadMimeTypes(Arrays.asList(
-                            LegacyTextMessageModel.MIME_TYPES.iterator().next(),
-                            LegacyImageConstants.MIME_TYPE_INFO,
-                            LegacyImageConstants.MIME_TYPE_PREVIEW))
+                            LegacyMimeTypes.LEGACY_TEXT_MIME_TYPE,
+                            LegacyMimeTypes.LEGACY_IMAGE_MIME_TYPE_INFO,
+                            LegacyMimeTypes.LEGACY_IMAGE_MIME_TYPE_PREVIEW))
                     .setTelemetryEnabled(telemetryEnabled);
 
             sLayerClient = generateLayerClient(sInstance, options);
