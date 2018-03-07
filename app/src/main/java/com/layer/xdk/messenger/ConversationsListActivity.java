@@ -15,10 +15,10 @@ import com.layer.sdk.messaging.Conversation;
 import com.layer.xdk.messenger.databinding.ActivityConversationsListBinding;
 import com.layer.xdk.messenger.util.Log;
 import com.layer.xdk.messenger.util.Util;
-import com.layer.xdk.ui.adapters.ConversationItemsAdapter;
 import com.layer.xdk.ui.conversation.ConversationItemsListView;
 import com.layer.xdk.ui.conversation.ConversationItemsListViewModel;
 import com.layer.xdk.ui.recyclerview.OnItemClickListener;
+import com.layer.xdk.ui.recyclerview.OnItemLongClickListener;
 
 public class ConversationsListActivity extends AppCompatActivity {
     private ConversationItemsListView mConversationsList;
@@ -52,7 +52,8 @@ public class ConversationsListActivity extends AppCompatActivity {
                 intent.putExtra(PushNotificationReceiver.LAYER_CONVERSATION_KEY, item.getId());
                 startActivity(intent);
             }
-
+        });
+        mConversationItemsListViewModel.setItemLongClickListener(new OnItemLongClickListener<Conversation>() {
             @Override
             public boolean onItemLongClick(final Conversation conversation) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ConversationsListActivity.this)
