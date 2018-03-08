@@ -109,11 +109,6 @@ public class ConversationSettingsActivity extends AppCompatActivity implements L
                     }
                 }).show();
             }
-
-            @Override
-            public boolean onItemLongClick(Identity item) {
-                return false;
-            }
         });
 
         binding.setViewModel(mItemsListViewModel);

@@ -120,7 +120,7 @@ public class PushNotificationReceiver extends BroadcastReceiver {
 
     public static synchronized Notifications getNotifications(Context context) {
         if (sNotifications == null) {
-            sNotifications = new Notifications(context);
+            sNotifications = new Notifications(context.getApplicationContext());
         }
         return sNotifications;
     }

@@ -35,10 +35,11 @@ import com.layer.xdk.ui.conversation.ConversationView;
 import com.layer.xdk.ui.conversation.ConversationViewModel;
 import com.layer.xdk.ui.message.file.FileSender;
 import com.layer.xdk.ui.message.location.CurrentLocationSender;
-import com.layer.xdk.ui.message.messagetypes.threepartimage.CameraSender;
-import com.layer.xdk.ui.message.messagetypes.threepartimage.GallerySender;
+import com.layer.xdk.ui.message.sender.CameraSender;
+import com.layer.xdk.ui.message.sender.GallerySender;
+import com.layer.xdk.ui.message.model.MessageModel;
 import com.layer.xdk.ui.message.text.RichTextSender;
-import com.layer.xdk.ui.recyclerview.OnItemClickListener;
+import com.layer.xdk.ui.recyclerview.OnItemLongClickListener;
 
 import java.util.HashSet;
 import java.util.List;
@@ -116,14 +117,6 @@ public class MessagesListActivity extends AppCompatActivity {
 
         App.getLayerClient().unregisterEventListener(mIdentityChangeListener);
         super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mConversationView != null) {
-            mConversationView.onDestroy();
-        }
     }
 
     @Override
@@ -218,45 +211,14 @@ public class MessagesListActivity extends AppCompatActivity {
     private void setupConversation(Conversation conversation) {
         mConversationView = mActivityMessagesListBinding.conversation;
 
-        mConversationViewModel = new ConversationViewModel(getApplicationContext(), App.getLayerClient(),
-                Util.getCellFactories(App.getLayerClient()), Util.getImageCacheWrapper(),
-                Util.getDateFormatter(getApplicationContext()), Util.getIdentityFormatter(this));
+        mConversationViewModel = new ConversationViewModel(getApplicationContext(),
+                App.getLayerClient(),
+                Util.getImageCacheWrapper(),
+                Util.getDateFormatter(getApplicationContext()),
+                Util.getIdentityFormatter(this));
 
-        mConversationViewModel.getMessageItemsListViewModel().setItemClickListener(new OnItemClickListener<Message>() {
-            @Override
-            public void onItemClick(Message message) {
-            }
-
-            @Override
-            public boolean onItemLongClick(final Message message) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MessagesListActivity.this)
-                        .setMessage(R.string.alert_message_delete_message)
-                        .setNegativeButton(R.string.alert_button_cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-
-                        .setPositiveButton(R.string.alert_button_delete_all_participants, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                message.delete(LayerClient.DeletionMode.ALL_PARTICIPANTS);
-                            }
-                        });
-                // User delete is only available if read receipts are enabled
-                if (message.getConversation().isReadReceiptsEnabled()) {
-                    builder.setNeutralButton(R.string.alert_button_delete_my_devices, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            message.delete(LayerClient.DeletionMode.ALL_MY_DEVICES);
-                        }
-                    });
-                }
-                builder.show();
-                return true;
-            }
-        });
+        mConversationViewModel.getMessageItemsListViewModel().setItemLongClickListener(
+                new MessageModelLongClickListener());
         mActivityMessagesListBinding.setViewModel(mConversationViewModel);
         setConversation(conversation, conversation != null);
         mActivityMessagesListBinding.executePendingBindings();
@@ -399,6 +361,44 @@ public class MessagesListActivity extends AppCompatActivity {
                     }
                 }
             }
+        }
+    }
+
+    private class MessageModelLongClickListener implements OnItemLongClickListener<MessageModel> {
+        @Override
+        public boolean onItemLongClick(MessageModel item) {
+            final Message message = item.getMessage();
+            AlertDialog.Builder builder = new AlertDialog.Builder(
+                    MessagesListActivity.this)
+                    .setMessage(R.string.alert_message_delete_message)
+                    .setNegativeButton(R.string.alert_button_cancel,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+
+                    .setPositiveButton(R.string.alert_button_delete_all_participants,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    message.delete(
+                                            LayerClient.DeletionMode.ALL_PARTICIPANTS);
+                                }
+                            });
+            // User delete is only available if read receipts are enabled
+            if (message.getConversation().isReadReceiptsEnabled()) {
+                builder.setNeutralButton(R.string.alert_button_delete_my_devices,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                message.delete(LayerClient.DeletionMode.ALL_MY_DEVICES);
+                            }
+                        });
+            }
+            builder.show();
+            return true;
         }
     }
 }
