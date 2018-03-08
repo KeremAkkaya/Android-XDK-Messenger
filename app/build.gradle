@@ -33,7 +33,7 @@ android {
 
     // Data binding is still trying to use 25.2.0 for some reason
     configurations.all {
-        resolutionStrategy.force 'com.android.support:support-v4:27.0.2'
+        resolutionStrategy.force 'com.android.support:support-v4:27.1.0'
     }
 }
 
