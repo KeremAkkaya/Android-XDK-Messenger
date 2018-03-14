@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.StrictMode;
+import android.support.multidex.MultiDexApplication;
 
 import com.layer.sdk.LayerClient;
 import com.layer.xdk.messenger.util.AuthenticationProvider;
@@ -26,7 +27,7 @@ import java.util.Arrays;
  * @see Picasso
  * @see AuthenticationProvider
  */
-public class App extends Application {
+public class App extends MultiDexApplication {
 
     // Set your Layer App ID from your Layer Developer Dashboard.
     public final static String LAYER_APP_ID = null;
