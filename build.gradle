@@ -15,11 +15,17 @@ ext {
     testButler = '1.3.1'
 }
 
+def preReleaseRepoUrl = System.getenv("LAYER_PRERELEASE_REPO_URL")
+
 allprojects {
     repositories {
         maven { url "https://raw.githubusercontent.com/layerhq/releases-android/master/releases/" }
         maven { url "https://maven.google.com" }
         jcenter()
+        if (preReleaseRepoUrl != null) {
+            println "Using Pre-release repository: " + preReleaseRepoUrl
+            maven { url preReleaseRepoUrl }
+        }
     }
 }
 
