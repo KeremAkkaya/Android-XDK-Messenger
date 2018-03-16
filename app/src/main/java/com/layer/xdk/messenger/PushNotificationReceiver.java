@@ -274,7 +274,7 @@ public class PushNotificationReceiver extends BroadcastReceiver {
             Collections.sort(positions);
 
             // Construct notification
-            String conversationTitle = Util.getConversationItemFormatter().getConversationTitle(App.getLayerClient().getAuthenticatedUser(), conversation);
+            String conversationTitle = Util.getConversationItemFormatter().getConversationTitle(conversation);
 
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle().setBigContentTitle(conversationTitle);
             int i;

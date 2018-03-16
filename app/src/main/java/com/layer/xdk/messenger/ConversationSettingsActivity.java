@@ -118,7 +118,7 @@ public class ConversationSettingsActivity extends AppCompatActivity implements L
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE || (event != null && event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                     String title = ((EditText) v).getText().toString().trim();
-                    Util.getConversationItemFormatter().setMetaDataTitleOnConversation(mConversation, title);
+                    Util.getConversationItemFormatter().setConversationMetadataTitle(mConversation, title);
                     Toast.makeText(v.getContext(), R.string.toast_group_name_updated, Toast.LENGTH_SHORT).show();
                     return true;
                 }

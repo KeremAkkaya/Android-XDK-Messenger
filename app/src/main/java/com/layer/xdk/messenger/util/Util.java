@@ -5,6 +5,7 @@ import android.content.Context;
 import com.layer.sdk.LayerClient;
 import com.layer.xdk.messenger.App;
 import com.layer.xdk.ui.conversationitem.ConversationItemFormatter;
+import com.layer.xdk.ui.conversationitem.DefaultConversationItemFormatter;
 import com.layer.xdk.ui.identity.IdentityFormatter;
 import com.layer.xdk.ui.identity.IdentityFormatterImpl;
 import com.layer.xdk.ui.util.DateFormatter;
@@ -29,7 +30,7 @@ public class Util {
         DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
         DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
         sImageCacheWrapper = new PicassoImageCacheWrapper(picasso);
-        sConversationItemFormatter = new ConversationItemFormatter(context, layerClient,
+        sConversationItemFormatter = new DefaultConversationItemFormatter(context, layerClient,
                 getIdentityFormatter(context), timeFormat, dateFormat);
     }
 
