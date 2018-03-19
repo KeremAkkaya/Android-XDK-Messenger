@@ -20,8 +20,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.layer.xdk.messenger.databinding.ActivityConversationSettingsBinding;
-import com.layer.xdk.messenger.util.Util;
 import com.layer.sdk.LayerClient;
 import com.layer.sdk.changes.LayerChangeEvent;
 import com.layer.sdk.listeners.LayerChangeEventListener;
@@ -29,6 +27,8 @@ import com.layer.sdk.listeners.LayerPolicyListener;
 import com.layer.sdk.messaging.Conversation;
 import com.layer.sdk.messaging.Identity;
 import com.layer.sdk.policy.Policy;
+import com.layer.xdk.messenger.databinding.ActivityConversationSettingsBinding;
+import com.layer.xdk.messenger.util.Util;
 import com.layer.xdk.ui.identity.IdentityItemsListView;
 import com.layer.xdk.ui.identity.IdentityItemsListViewModel;
 import com.layer.xdk.ui.recyclerview.OnItemClickListener;
@@ -69,7 +69,8 @@ public class ConversationSettingsActivity extends AppCompatActivity implements L
         Set<Identity> participants = mConversation.getParticipants();
         participants.remove(App.getLayerClient().getAuthenticatedUser());
 
-        mItemsListViewModel = new IdentityItemsListViewModel(this, App.getLayerClient(), Util.getImageCacheWrapper());
+        mItemsListViewModel = LayerServiceLocatorManager.INSTANCE.getComponent().identityItemsListViewModel();
+
         mItemsListViewModel.setIdentities(participants);
 
         mItemsListViewModel.setItemClickListener(new OnItemClickListener<Identity>() {
@@ -77,7 +78,7 @@ public class ConversationSettingsActivity extends AppCompatActivity implements L
             public void onItemClick(final Identity item) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(ConversationSettingsActivity.this)
-                        .setMessage(Util.getIdentityFormatter(getApplicationContext()).getDisplayName(item));
+                        .setMessage(Util.getIdentityFormatter().getDisplayName(item));
 
                 if (mConversation.getParticipants().size() > 2) {
                     builder.setNeutralButton(R.string.alert_button_remove, new DialogInterface.OnClickListener() {

@@ -14,7 +14,6 @@ import com.layer.sdk.LayerClient;
 import com.layer.sdk.messaging.Conversation;
 import com.layer.xdk.messenger.databinding.ActivityConversationsListBinding;
 import com.layer.xdk.messenger.util.Log;
-import com.layer.xdk.messenger.util.Util;
 import com.layer.xdk.ui.conversation.ConversationItemsListView;
 import com.layer.xdk.ui.conversation.ConversationItemsListViewModel;
 import com.layer.xdk.ui.recyclerview.OnItemClickListener;
@@ -22,7 +21,6 @@ import com.layer.xdk.ui.recyclerview.OnItemLongClickListener;
 
 public class ConversationsListActivity extends AppCompatActivity {
     private ConversationItemsListView mConversationsList;
-    private ConversationItemsListViewModel mConversationItemsListViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +38,12 @@ public class ConversationsListActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         mConversationsList = binding.conversationsList;
 
-        mConversationItemsListViewModel = new ConversationItemsListViewModel(this, App.getLayerClient(),
-                Util.getConversationItemFormatter(), Util.getImageCacheWrapper());
-        mConversationItemsListViewModel.setItemClickListener(new OnItemClickListener<Conversation>() {
+        ConversationItemsListViewModel conversationItemsListViewModel =
+                LayerServiceLocatorManager.INSTANCE
+                        .getComponent()
+                        .conversationItemsListViewModel();
+        conversationItemsListViewModel.useDefaultQuery();
+        conversationItemsListViewModel.setItemClickListener(new OnItemClickListener<Conversation>() {
             @Override
             public void onItemClick(Conversation item) {
                 Intent intent = new Intent(ConversationsListActivity.this, MessagesListActivity.class);
@@ -53,7 +54,7 @@ public class ConversationsListActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        mConversationItemsListViewModel.setItemLongClickListener(new OnItemLongClickListener<Conversation>() {
+        conversationItemsListViewModel.setItemLongClickListener(new OnItemLongClickListener<Conversation>() {
             @Override
             public boolean onItemLongClick(final Conversation conversation) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ConversationsListActivity.this)
@@ -84,7 +85,7 @@ public class ConversationsListActivity extends AppCompatActivity {
             }
         });
 
-        binding.setViewModel(mConversationItemsListViewModel);
+        binding.setViewModel(conversationItemsListViewModel);
         binding.floatingActionButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 startActivity(new Intent(ConversationsListActivity.this, MessagesListActivity.class));

@@ -14,7 +14,6 @@ import com.layer.xdk.messenger.util.LayerAuthenticationProvider;
 import com.layer.xdk.messenger.util.Log;
 import com.layer.xdk.ui.message.LegacyMimeTypes;
 import com.layer.xdk.ui.util.Util;
-import com.layer.xdk.ui.util.imagecache.requesthandlers.MessagePartRequestHandler;
 import com.squareup.picasso.Picasso;
 
 import java.util.Arrays;
@@ -36,9 +35,7 @@ public class App extends MultiDexApplication {
     public static final String SHARED_PREFS_KEY_TELEMETRY_ENABLED = "TELEMETRY_ENABLED";
 
     private static Application sInstance;
-    private static LayerClient sLayerClient;
     private static AuthenticationProvider sAuthProvider;
-    private static Picasso sPicasso;
 
     //==============================================================================================
     // Application Overrides
@@ -73,6 +70,8 @@ public class App extends MultiDexApplication {
 
         // Allow the LayerClient to track app state
         LayerClient.applicationCreated(this);
+
+        LayerServiceLocatorManager.INSTANCE.getInstance().setAppContext(this);
     }
 
     public static Application getInstance() {
@@ -147,7 +146,8 @@ public class App extends MultiDexApplication {
      * @return New or existing LayerClient, or `null` if a LayerClient could not be constructed.
      */
     public static LayerClient getLayerClient() {
-        if (sLayerClient == null) {
+        LayerClient layerClient = LayerServiceLocatorManager.INSTANCE.getInstance().getLayerClient();
+        if (layerClient == null) {
             boolean telemetryEnabled;
             SharedPreferences sharedPreferences = sInstance.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
             if (sharedPreferences.contains(SHARED_PREFS_KEY_TELEMETRY_ENABLED)) {
@@ -170,17 +170,17 @@ public class App extends MultiDexApplication {
                             LegacyMimeTypes.LEGACY_IMAGE_MIME_TYPE_PREVIEW))
                     .setTelemetryEnabled(telemetryEnabled);
 
-            sLayerClient = generateLayerClient(sInstance, options);
+            layerClient = generateLayerClient(sInstance, options);
 
             // Unable to generate Layer Client (no App ID, etc.)
-            if (sLayerClient == null) return null;
+            if (layerClient == null) return null;
 
             /* Register AuthenticationProvider for handling authentication challenges */
-            sLayerClient.registerAuthenticationListener(getAuthenticationProvider());
+            layerClient.registerAuthenticationListener(getAuthenticationProvider());
 
-            com.layer.xdk.messenger.util.Util.init(sInstance, getLayerClient(), getPicasso());
+            LayerServiceLocatorManager.INSTANCE.getInstance().setLayerClient(layerClient);
         }
-        return sLayerClient;
+        return layerClient;
     }
 
     public static AuthenticationProvider getAuthenticationProvider() {
@@ -192,16 +192,6 @@ public class App extends MultiDexApplication {
             if (layerClient != null && sAuthProvider.hasCredentials()) layerClient.authenticate();
         }
         return sAuthProvider;
-    }
-
-    public static Picasso getPicasso() {
-        if (sPicasso == null) {
-            // Picasso with custom RequestHandler for loading from Layer MessageParts.
-            sPicasso = new Picasso.Builder(sInstance)
-                    .addRequestHandler(new MessagePartRequestHandler(getLayerClient()))
-                    .build();
-        }
-        return sPicasso;
     }
 
     public static String getLayerAppId() {

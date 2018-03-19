@@ -19,15 +19,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.layer.xdk.ui.avatar.AvatarView;
-import com.layer.xdk.ui.avatar.AvatarViewModelImpl;
-import com.layer.xdk.ui.identity.IdentityFormatterImpl;
-import com.layer.xdk.ui.presence.PresenceView;
-import com.layer.xdk.ui.util.Util;
-import com.layer.xdk.messenger.util.ConversationSettingsTaskLoader;
-import com.layer.xdk.messenger.util.ConversationSettingsTaskLoader.Results;
-
-import com.layer.xdk.messenger.util.Log;
 import com.layer.sdk.LayerClient;
 import com.layer.sdk.changes.LayerChangeEvent;
 import com.layer.sdk.exceptions.LayerException;
@@ -36,6 +27,13 @@ import com.layer.sdk.listeners.LayerChangeEventListener;
 import com.layer.sdk.listeners.LayerConnectionListener;
 import com.layer.sdk.messaging.Identity;
 import com.layer.sdk.messaging.Presence;
+import com.layer.xdk.messenger.util.ConversationSettingsTaskLoader;
+import com.layer.xdk.messenger.util.ConversationSettingsTaskLoader.Results;
+import com.layer.xdk.messenger.util.Log;
+import com.layer.xdk.ui.avatar.AvatarView;
+import com.layer.xdk.ui.avatar.AvatarViewModel;
+import com.layer.xdk.ui.presence.PresenceView;
+import com.layer.xdk.ui.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +103,8 @@ public class AppSettingsActivity extends BaseActivity implements LayerConnection
         mDiskAllowance = (TextView) findViewById(R.id.disk_allowance);
         mAutoDownloadMimeTypes = (TextView) findViewById(R.id.auto_download_mime_types);
 
-        mAvatarView.init(new AvatarViewModelImpl(com.layer.xdk.messenger.util.Util.getImageCacheWrapper()), new IdentityFormatterImpl(getApplicationContext()));
+        AvatarViewModel avatarViewModel = LayerServiceLocatorManager.INSTANCE.getComponent().avatarViewModel();
+        mAvatarView.init(avatarViewModel);
 
         getSupportLoaderManager().initLoader(R.id.setting_loader_id, null, this);
 

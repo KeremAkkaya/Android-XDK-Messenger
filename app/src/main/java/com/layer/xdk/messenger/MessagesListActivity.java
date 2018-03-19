@@ -31,13 +31,12 @@ import com.layer.xdk.messenger.databinding.ActivityMessagesListBinding;
 import com.layer.xdk.messenger.util.Util;
 import com.layer.xdk.ui.AddressBar;
 import com.layer.xdk.ui.composebar.ComposeBar;
-import com.layer.xdk.ui.conversation.ConversationView;
 import com.layer.xdk.ui.conversation.ConversationViewModel;
 import com.layer.xdk.ui.message.file.FileSender;
 import com.layer.xdk.ui.message.location.CurrentLocationSender;
+import com.layer.xdk.ui.message.model.MessageModel;
 import com.layer.xdk.ui.message.sender.CameraSender;
 import com.layer.xdk.ui.message.sender.GallerySender;
-import com.layer.xdk.ui.message.model.MessageModel;
 import com.layer.xdk.ui.message.text.RichTextSender;
 import com.layer.xdk.ui.recyclerview.OnItemLongClickListener;
 
@@ -49,7 +48,6 @@ public class MessagesListActivity extends AppCompatActivity {
     private Conversation mConversation;
 
     private AddressBar mAddressBar;
-    private ConversationView mConversationView;
     private ComposeBar mComposeBar;
     private IdentityChangeListener mIdentityChangeListener;
     private ConversationViewModel mConversationViewModel;
@@ -194,7 +192,7 @@ public class MessagesListActivity extends AppCompatActivity {
                 new GallerySender(R.string.xdk_ui_attachment_menu_gallery, R.drawable.ic_photo_white_24dp, this, App.getLayerClient()),
                 new CurrentLocationSender(R.string.xdk_ui_attachment_menu_current_location,
                         R.drawable.ic_place_white_24dp, this, App.getLayerClient(),
-                        Util.getIdentityFormatter(this)),
+                        Util.getIdentityFormatter()),
                 new FileSender(this, App.getLayerClient(), R.string.xdk_ui_attachment_menu_file));
 
         mComposeBar.setOnMessageEditTextFocusChangeListener(new View.OnFocusChangeListener() {
@@ -209,13 +207,8 @@ public class MessagesListActivity extends AppCompatActivity {
     }
 
     private void setupConversation(Conversation conversation) {
-        mConversationView = mActivityMessagesListBinding.conversation;
-
-        mConversationViewModel = new ConversationViewModel(getApplicationContext(),
-                App.getLayerClient(),
-                Util.getImageCacheWrapper(),
-                Util.getDateFormatter(getApplicationContext()),
-                Util.getIdentityFormatter(this));
+        mConversationViewModel = LayerServiceLocatorManager.INSTANCE.getComponent()
+                .conversationViewModel();
 
         mConversationViewModel.getMessageItemsListViewModel().setItemLongClickListener(
                 new MessageModelLongClickListener());
