@@ -1,7 +1,7 @@
 package com.layer.xdk.messenger.util;
 
 import com.layer.xdk.messenger.LayerServiceLocatorManager;
-import com.layer.xdk.ui.conversationitem.ConversationItemFormatter;
+import com.layer.xdk.ui.conversation.ConversationItemFormatter;
 import com.layer.xdk.ui.identity.IdentityFormatter;
 import com.layer.xdk.ui.util.imagecache.ImageCacheWrapper;
 import com.layer.xdk.ui.util.imagecache.PicassoImageCacheWrapper;

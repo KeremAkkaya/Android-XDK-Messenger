@@ -14,13 +14,12 @@ import com.layer.sdk.LayerClient;
 import com.layer.sdk.messaging.Conversation;
 import com.layer.xdk.messenger.databinding.ActivityConversationsListBinding;
 import com.layer.xdk.messenger.util.Log;
-import com.layer.xdk.ui.conversation.ConversationItemsListView;
 import com.layer.xdk.ui.conversation.ConversationItemsListViewModel;
+import com.layer.xdk.ui.conversation.adapter.ConversationItemModel;
 import com.layer.xdk.ui.recyclerview.OnItemClickListener;
 import com.layer.xdk.ui.recyclerview.OnItemLongClickListener;
 
 public class ConversationsListActivity extends AppCompatActivity {
-    private ConversationItemsListView mConversationsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,27 +35,28 @@ public class ConversationsListActivity extends AppCompatActivity {
 
         ActivityConversationsListBinding binding = ActivityConversationsListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        mConversationsList = binding.conversationsList;
 
         ConversationItemsListViewModel conversationItemsListViewModel =
                 LayerServiceLocatorManager.INSTANCE
                         .getComponent()
                         .conversationItemsListViewModel();
         conversationItemsListViewModel.useDefaultQuery();
-        conversationItemsListViewModel.setItemClickListener(new OnItemClickListener<Conversation>() {
+        conversationItemsListViewModel.setItemClickListener(new OnItemClickListener<ConversationItemModel>() {
             @Override
-            public void onItemClick(Conversation item) {
+            public void onItemClick(ConversationItemModel item) {
+                Conversation conversation = item.getConversation();
                 Intent intent = new Intent(ConversationsListActivity.this, MessagesListActivity.class);
                 if (Log.isLoggable(Log.VERBOSE)) {
-                    Log.v("Launching MessagesListActivity with existing conversation ID: " + item.getId());
+                    Log.v("Launching MessagesListActivity with existing conversation ID: " + conversation.getId());
                 }
-                intent.putExtra(PushNotificationReceiver.LAYER_CONVERSATION_KEY, item.getId());
+                intent.putExtra(PushNotificationReceiver.LAYER_CONVERSATION_KEY, conversation.getId());
                 startActivity(intent);
             }
         });
-        conversationItemsListViewModel.setItemLongClickListener(new OnItemLongClickListener<Conversation>() {
+        conversationItemsListViewModel.setItemLongClickListener(new OnItemLongClickListener<ConversationItemModel>() {
             @Override
-            public boolean onItemLongClick(final Conversation conversation) {
+            public boolean onItemLongClick(final ConversationItemModel item) {
+                final Conversation conversation = item.getConversation();
                 AlertDialog.Builder builder = new AlertDialog.Builder(ConversationsListActivity.this)
                         .setMessage(R.string.alert_message_delete_conversation)
                         .setNegativeButton(R.string.alert_button_cancel, new DialogInterface.OnClickListener() {
@@ -104,14 +104,6 @@ public class ConversationsListActivity extends AppCompatActivity {
             client.connect();
         } else {
             client.authenticate();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mConversationsList != null) {
-            mConversationsList.onDestroy();
         }
     }
 
