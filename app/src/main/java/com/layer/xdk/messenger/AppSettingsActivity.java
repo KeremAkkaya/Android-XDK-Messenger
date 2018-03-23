@@ -297,7 +297,7 @@ public class AppSettingsActivity extends BaseActivity implements LayerConnection
         mVerboseLogging.setEnabled(!enabledByEnvironment);
         mVerboseLogging.setChecked(enabledByEnvironment || LayerClient.isLoggingEnabled());
         mAppVersion.setText(getString(R.string.settings_content_app_version, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE));
-        mXdkVersion.setText(Util.getVersion());
+        mXdkVersion.setText(Util.getXdkUiVersion());
         mLayerVersion.setText(LayerClient.getVersion());
         mAndroidVersion.setText(getString(R.string.settings_content_android_version, Build.VERSION.RELEASE, Build.VERSION.SDK_INT));
 

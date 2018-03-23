@@ -3,8 +3,8 @@ package com.layer.xdk.messenger.util;
 import com.layer.xdk.messenger.LayerServiceLocatorManager;
 import com.layer.xdk.ui.conversation.ConversationItemFormatter;
 import com.layer.xdk.ui.identity.IdentityFormatter;
-import com.layer.xdk.ui.util.imagecache.ImageCacheWrapper;
-import com.layer.xdk.ui.util.imagecache.PicassoImageCacheWrapper;
+import com.layer.xdk.ui.message.image.cache.ImageCacheWrapper;
+import com.layer.xdk.ui.message.image.cache.PicassoImageCacheWrapper;
 
 import java.io.IOException;
 import java.io.InputStream;
