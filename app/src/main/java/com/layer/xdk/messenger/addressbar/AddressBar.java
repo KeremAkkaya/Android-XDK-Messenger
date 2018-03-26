@@ -26,7 +26,7 @@ import com.layer.xdk.messenger.R;
 import com.layer.xdk.messenger.util.Util;
 import com.layer.xdk.ui.avatar.AvatarView;
 import com.layer.xdk.ui.avatar.AvatarViewModelImpl;
-import com.layer.xdk.ui.identity.IdentityFormatterImpl;
+import com.layer.xdk.ui.identity.DefaultIdentityFormatter;
 import com.layer.xdk.ui.presence.PresenceView;
 import com.layer.xdk.ui.avatar.AvatarStyle;
 import com.layer.xdk.ui.util.EditTextUtil;
@@ -458,7 +458,7 @@ public class AddressBar extends LinearLayout {
 
             // Initialize participant data
             mName.setText(Util.getDisplayName(participant));
-            mAvatarView.init(new AvatarViewModelImpl(mImageCacheWrapper, new IdentityFormatterImpl(context)));
+            mAvatarView.init(new AvatarViewModelImpl(mImageCacheWrapper, new DefaultIdentityFormatter(context)));
             mAvatarView.setParticipants(participant);
             mPresenceView.setParticipants(participant);
             mAvatarView.setStyle(mAvatarStyle);
@@ -613,7 +613,7 @@ public class AddressBar extends LinearLayout {
             ViewHolder viewHolder = new ViewHolder(parent);
 
             viewHolder.mAvatarView
-                    .init(new AvatarViewModelImpl(mImageCacheWrapper, new IdentityFormatterImpl(parent.getContext())));
+                    .init(new AvatarViewModelImpl(mImageCacheWrapper, new DefaultIdentityFormatter(parent.getContext())));
             viewHolder.mAvatarView.setStyle(mAvatarStyle);
             return viewHolder;
         }
