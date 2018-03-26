@@ -1,5 +1,12 @@
 package com.layer.xdk.messenger.util;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
+
+import com.layer.sdk.messaging.Identity;
 import com.layer.xdk.messenger.LayerServiceLocatorManager;
 import com.layer.xdk.ui.conversation.ConversationItemFormatter;
 import com.layer.xdk.ui.identity.IdentityFormatter;
@@ -38,4 +45,32 @@ public class Util {
         return LayerServiceLocatorManager.INSTANCE.getComponent().conversationItemFormatter();
     }
 
+    public static void copyToClipboard(Context context, int stringResId, String content) {
+        copyToClipboard(context, context.getString(stringResId), content);
+    }
+
+    public static void copyToClipboard(Context context, String description, String content) {
+        ClipboardManager manager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clipData = new ClipData(description, new String[]{"text/plain"}, new ClipData.Item(content));
+        manager.setPrimaryClip(clipData);
+    }
+
+    @NonNull
+    public static String getDisplayName(Identity identity) {
+        if (TextUtils.isEmpty(identity.getDisplayName())) {
+            String first = identity.getFirstName();
+            String last = identity.getLastName();
+            if (!TextUtils.isEmpty(first)) {
+                if (!TextUtils.isEmpty(last)) {
+                    return String.format("%s %s", first, last);
+                }
+                return first;
+            } else if (!TextUtils.isEmpty(last)) {
+                return last;
+            } else {
+                return identity.getUserId();
+            }
+        }
+        return identity.getDisplayName();
+    }
 }

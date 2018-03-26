@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.layer.xdk.ui.AddressBar
+        <com.layer.xdk.messenger.addressbar.AddressBar
             android:id="@+id/conversation_launcher"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

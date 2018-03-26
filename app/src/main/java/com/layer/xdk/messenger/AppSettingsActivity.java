@@ -30,10 +30,10 @@ import com.layer.sdk.messaging.Presence;
 import com.layer.xdk.messenger.util.ConversationSettingsTaskLoader;
 import com.layer.xdk.messenger.util.ConversationSettingsTaskLoader.Results;
 import com.layer.xdk.messenger.util.Log;
+import com.layer.xdk.messenger.util.Util;
 import com.layer.xdk.ui.avatar.AvatarView;
 import com.layer.xdk.ui.avatar.AvatarViewModel;
 import com.layer.xdk.ui.presence.PresenceView;
-import com.layer.xdk.ui.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,7 +146,7 @@ public class AppSettingsActivity extends BaseActivity implements LayerConnection
                                 progressDialog.setMessage(getResources().getString(R.string.alert_dialog_logout));
                                 progressDialog.setCancelable(false);
                                 progressDialog.show();
-                                App.deauthenticate(new Util.DeauthenticationCallback() {
+                                App.deauthenticate(new com.layer.xdk.ui.util.Util.DeauthenticationCallback() {
                                     @Override
                                     public void onDeauthenticationSuccess(LayerClient client) {
                                         if (Log.isPerfLoggable()) {
@@ -297,7 +297,7 @@ public class AppSettingsActivity extends BaseActivity implements LayerConnection
         mVerboseLogging.setEnabled(!enabledByEnvironment);
         mVerboseLogging.setChecked(enabledByEnvironment || LayerClient.isLoggingEnabled());
         mAppVersion.setText(getString(R.string.settings_content_app_version, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE));
-        mXdkVersion.setText(Util.getXdkUiVersion());
+        mXdkVersion.setText(com.layer.xdk.ui.util.Util.getXdkUiVersion());
         mLayerVersion.setText(LayerClient.getVersion());
         mAndroidVersion.setText(getString(R.string.settings_content_android_version, Build.VERSION.RELEASE, Build.VERSION.SDK_INT));
 
