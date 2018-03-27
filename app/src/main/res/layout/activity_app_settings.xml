@@ -85,7 +85,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/xdk_ui_view_divider" />
+            android:background="@color/view_divider" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -120,7 +120,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/xdk_ui_view_divider"/>
+            android:background="@color/view_divider"/>
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -164,12 +164,12 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/xdk_ui_view_divider" />
+            android:background="@color/view_divider" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/xdk_ui_view_divider"/>
+            android:background="@color/view_divider"/>
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -213,7 +213,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/xdk_ui_view_divider" />
+            android:background="@color/view_divider" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -372,7 +372,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/xdk_ui_view_divider" />
+            android:background="@color/view_divider" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -461,7 +461,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/xdk_ui_view_divider" />
+            android:background="@color/view_divider" />
 
         <FrameLayout
             android:layout_width="match_parent"

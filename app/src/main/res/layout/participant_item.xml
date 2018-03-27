@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/xdk_ui_secondary_item_height"
-    android:background="@drawable/xdk_ui_address_bar_item_background"
+    android:background="@drawable/address_bar_item_background"
     android:orientation="horizontal">
 
     <FrameLayout

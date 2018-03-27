@@ -22,12 +22,4 @@
         <item name="avatarTextStyle">normal</item>
     </style>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.ui.Light">
-        <!-- Apply default styles -->
-        <item name="FourPartItemsListView">@style/FourPartItemsListView</item>
-        <item name="ComposeBar">@style/ComposeBar</item>
-        <item name="AddressBar">@style/AddressBar</item>
-    </style>
-
 </resources>
