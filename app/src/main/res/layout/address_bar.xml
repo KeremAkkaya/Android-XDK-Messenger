@@ -22,7 +22,7 @@
                 android:minWidth="@dimen/xdk_ui_participant_filter_min_width"
                 android:singleLine="true"
                 android:textSize="@dimen/xdk_ui_text_size_input"
-                android:background="@drawable/xdk_ui_edit_text_background"
+                android:background="@drawable/address_bar_edit_text_background"
                 android:textCursorDrawable="@drawable/xdk_ui_edit_text_cursor"
                 />
 

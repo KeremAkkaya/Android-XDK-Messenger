@@ -12,6 +12,7 @@ android {
         versionCode 2
         versionName "$versionCode"
         testInstrumentationRunner 'com.layer.xdk.messenger.testrunner.TestButlerRunner'
+        vectorDrawables.useSupportLibrary = true
 
         // Multidex is needed as test libraries pushes the dex count over the limit
         multiDexEnabled true

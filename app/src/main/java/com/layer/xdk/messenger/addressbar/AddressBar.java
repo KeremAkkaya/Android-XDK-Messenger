@@ -438,7 +438,7 @@ public class AddressBar extends LinearLayout {
             mParticipant = participant;
 
             // Inflate and cache views
-            inflater.inflate(R.layout.xdk_ui_participant_chip, this, true);
+            inflater.inflate(R.layout.participant_chip, this, true);
             mAvatarView = (AvatarView) findViewById(R.id.avatar);
             mPresenceView = (PresenceView) findViewById(R.id.presence);
             mName = (TextView) findViewById(R.id.name);
@@ -454,7 +454,7 @@ public class AddressBar extends LinearLayout {
             p.setMargins(margin, margin, margin, margin);
             setLayoutParams(p);
             setOrientation(HORIZONTAL);
-            setBackgroundDrawable(r.getDrawable(R.drawable.xdk_ui_participant_chip_background));
+            setBackgroundDrawable(r.getDrawable(R.drawable.participant_chip_background));
 
             // Initialize participant data
             mName.setText(Util.getDisplayName(participant));

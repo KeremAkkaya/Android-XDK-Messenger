@@ -3,8 +3,11 @@ package com.layer.xdk.messenger;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -154,6 +157,10 @@ public class MessagesListActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_messages_list, menu);
+
+        MenuItem settings = menu.findItem(R.id.action_details);
+        Drawable icon = settings.getIcon();
+        DrawableCompat.setTint(icon, ContextCompat.getColor(this, android.R.color.white));
         return true;
     }
 
@@ -187,11 +194,11 @@ public class MessagesListActivity extends AppCompatActivity {
         mComposeBar.setTextSender(new RichTextSender(this, App.getLayerClient()));
         mComposeBar.addAttachmentSendersToDefaultAttachmentButton(
                 new CameraSender(R.string.xdk_ui_attachment_menu_camera,
-                        R.drawable.ic_photo_camera_white_24dp, this, App.getLayerClient(),
+                        R.drawable.ic_photo_camera_black_24dp, this, App.getLayerClient(),
                         getApplicationContext().getPackageName() + ".file_provider"),
-                new GallerySender(R.string.xdk_ui_attachment_menu_gallery, R.drawable.ic_photo_white_24dp, this, App.getLayerClient()),
+                new GallerySender(R.string.xdk_ui_attachment_menu_gallery, R.drawable.ic_photo_black_24dp, this, App.getLayerClient()),
                 new CurrentLocationSender(R.string.xdk_ui_attachment_menu_current_location,
-                        R.drawable.ic_place_white_24dp, this, App.getLayerClient(),
+                        R.drawable.ic_place_black_24dp, this, App.getLayerClient(),
                         Util.getIdentityFormatter()),
                 new FileSender(this, App.getLayerClient(), R.string.xdk_ui_attachment_menu_file));
 

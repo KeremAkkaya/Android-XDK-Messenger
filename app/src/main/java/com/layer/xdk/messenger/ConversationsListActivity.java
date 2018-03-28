@@ -2,7 +2,10 @@ package com.layer.xdk.messenger;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -111,6 +114,9 @@ public class ConversationsListActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         int menuResId = R.menu.menu_conversations_list;
         getMenuInflater().inflate(menuResId, menu);
+        MenuItem settings = menu.findItem(R.id.action_settings);
+        Drawable icon = settings.getIcon();
+        DrawableCompat.setTint(icon, ContextCompat.getColor(this, android.R.color.white));
         return true;
     }
 
