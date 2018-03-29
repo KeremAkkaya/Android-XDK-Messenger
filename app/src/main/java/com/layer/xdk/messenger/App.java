@@ -163,9 +163,13 @@ public class App extends MultiDexApplication {
                     /* Fetch the minimum amount per conversation when first authenticated */
                     .historicSyncPolicy(LayerClient.Options.HistoricSyncPolicy.FROM_LAST_MESSAGE)
 
-                    /* Automatically download text and ThreePartImage info/preview */
+                    /* Automatically download root and preview parts, along with legacy text and
+                     * three part info preview parts
+                     */
                     .autoDownloadMimeTypes(Arrays.asList(
-                            LegacyMimeTypes.LEGACY_TEXT_MIME_TYPE,
+                            "*/*; role=root",
+                            "*/*; role=preview",
+                            "text/plain",
                             LegacyMimeTypes.LEGACY_IMAGE_MIME_TYPE_INFO,
                             LegacyMimeTypes.LEGACY_IMAGE_MIME_TYPE_PREVIEW))
                     .setTelemetryEnabled(telemetryEnabled);
