@@ -22,15 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.layer.xdk.messenger.R;
-import com.layer.xdk.messenger.util.Util;
-import com.layer.xdk.ui.avatar.AvatarView;
-import com.layer.xdk.ui.avatar.AvatarViewModelImpl;
-import com.layer.xdk.ui.identity.DefaultIdentityFormatter;
-import com.layer.xdk.ui.presence.PresenceView;
-import com.layer.xdk.ui.avatar.AvatarStyle;
-import com.layer.xdk.ui.util.EditTextUtil;
-import com.layer.xdk.ui.message.image.cache.ImageCacheWrapper;
 import com.layer.sdk.LayerClient;
 import com.layer.sdk.messaging.Conversation;
 import com.layer.sdk.messaging.Identity;
@@ -39,6 +30,14 @@ import com.layer.sdk.query.Predicate;
 import com.layer.sdk.query.Query;
 import com.layer.sdk.query.RecyclerViewController;
 import com.layer.sdk.query.SortDescriptor;
+import com.layer.xdk.messenger.LayerServiceLocatorManager;
+import com.layer.xdk.messenger.R;
+import com.layer.xdk.messenger.util.Util;
+import com.layer.xdk.ui.avatar.AvatarStyle;
+import com.layer.xdk.ui.avatar.AvatarView;
+import com.layer.xdk.ui.message.image.cache.ImageCacheWrapper;
+import com.layer.xdk.ui.presence.PresenceView;
+import com.layer.xdk.ui.util.EditTextUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -458,7 +457,8 @@ public class AddressBar extends LinearLayout {
 
             // Initialize participant data
             mName.setText(Util.getDisplayName(participant));
-            mAvatarView.init(new AvatarViewModelImpl(mImageCacheWrapper, new DefaultIdentityFormatter(context)));
+            mAvatarView.setIdentityFormatter(LayerServiceLocatorManager.INSTANCE.getComponent().identityFormatter());
+            mAvatarView.setImageCacheWrapper(LayerServiceLocatorManager.INSTANCE.getComponent().imageCacheWrapper());
             mAvatarView.setParticipants(participant);
             mPresenceView.setParticipants(participant);
             mAvatarView.setStyle(mAvatarStyle);
@@ -612,8 +612,10 @@ public class AddressBar extends LinearLayout {
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             ViewHolder viewHolder = new ViewHolder(parent);
 
-            viewHolder.mAvatarView
-                    .init(new AvatarViewModelImpl(mImageCacheWrapper, new DefaultIdentityFormatter(parent.getContext())));
+            viewHolder.mAvatarView.setIdentityFormatter(LayerServiceLocatorManager.INSTANCE.
+                    getComponent().identityFormatter());
+            viewHolder.mAvatarView.setImageCacheWrapper(LayerServiceLocatorManager.INSTANCE
+                    .getComponent().imageCacheWrapper());
             viewHolder.mAvatarView.setStyle(mAvatarStyle);
             return viewHolder;
         }
