@@ -2,7 +2,10 @@ package com.layer.xdk.messenger;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,15 +17,12 @@ import com.layer.sdk.LayerClient;
 import com.layer.sdk.messaging.Conversation;
 import com.layer.xdk.messenger.databinding.ActivityConversationsListBinding;
 import com.layer.xdk.messenger.util.Log;
-import com.layer.xdk.messenger.util.Util;
-import com.layer.xdk.ui.conversation.ConversationItemsListView;
 import com.layer.xdk.ui.conversation.ConversationItemsListViewModel;
+import com.layer.xdk.ui.conversation.adapter.ConversationItemModel;
 import com.layer.xdk.ui.recyclerview.OnItemClickListener;
 import com.layer.xdk.ui.recyclerview.OnItemLongClickListener;
 
 public class ConversationsListActivity extends AppCompatActivity {
-    private ConversationItemsListView mConversationsList;
-    private ConversationItemsListViewModel mConversationItemsListViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,24 +38,28 @@ public class ConversationsListActivity extends AppCompatActivity {
 
         ActivityConversationsListBinding binding = ActivityConversationsListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        mConversationsList = binding.conversationsList;
 
-        mConversationItemsListViewModel = new ConversationItemsListViewModel(this, App.getLayerClient(),
-                Util.getConversationItemFormatter(), Util.getImageCacheWrapper());
-        mConversationItemsListViewModel.setItemClickListener(new OnItemClickListener<Conversation>() {
+        ConversationItemsListViewModel conversationItemsListViewModel =
+                LayerServiceLocatorManager.INSTANCE
+                        .getComponent()
+                        .conversationItemsListViewModel();
+        conversationItemsListViewModel.useDefaultQuery();
+        conversationItemsListViewModel.setItemClickListener(new OnItemClickListener<ConversationItemModel>() {
             @Override
-            public void onItemClick(Conversation item) {
+            public void onItemClick(ConversationItemModel item) {
+                Conversation conversation = item.getConversation();
                 Intent intent = new Intent(ConversationsListActivity.this, MessagesListActivity.class);
                 if (Log.isLoggable(Log.VERBOSE)) {
-                    Log.v("Launching MessagesListActivity with existing conversation ID: " + item.getId());
+                    Log.v("Launching MessagesListActivity with existing conversation ID: " + conversation.getId());
                 }
-                intent.putExtra(PushNotificationReceiver.LAYER_CONVERSATION_KEY, item.getId());
+                intent.putExtra(PushNotificationReceiver.LAYER_CONVERSATION_KEY, conversation.getId());
                 startActivity(intent);
             }
         });
-        mConversationItemsListViewModel.setItemLongClickListener(new OnItemLongClickListener<Conversation>() {
+        conversationItemsListViewModel.setItemLongClickListener(new OnItemLongClickListener<ConversationItemModel>() {
             @Override
-            public boolean onItemLongClick(final Conversation conversation) {
+            public boolean onItemLongClick(final ConversationItemModel item) {
+                final Conversation conversation = item.getConversation();
                 AlertDialog.Builder builder = new AlertDialog.Builder(ConversationsListActivity.this)
                         .setMessage(R.string.alert_message_delete_conversation)
                         .setNegativeButton(R.string.alert_button_cancel, new DialogInterface.OnClickListener() {
@@ -84,7 +88,7 @@ public class ConversationsListActivity extends AppCompatActivity {
             }
         });
 
-        binding.setViewModel(mConversationItemsListViewModel);
+        binding.setViewModel(conversationItemsListViewModel);
         binding.floatingActionButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 startActivity(new Intent(ConversationsListActivity.this, MessagesListActivity.class));
@@ -107,17 +111,12 @@ public class ConversationsListActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mConversationsList != null) {
-            mConversationsList.onDestroy();
-        }
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         int menuResId = R.menu.menu_conversations_list;
         getMenuInflater().inflate(menuResId, menu);
+        MenuItem settings = menu.findItem(R.id.action_settings);
+        Drawable icon = settings.getIcon();
+        DrawableCompat.setTint(icon, ContextCompat.getColor(this, android.R.color.white));
         return true;
     }
 

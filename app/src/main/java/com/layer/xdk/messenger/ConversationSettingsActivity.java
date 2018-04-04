@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -20,8 +21,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.layer.xdk.messenger.databinding.ActivityConversationSettingsBinding;
-import com.layer.xdk.messenger.util.Util;
 import com.layer.sdk.LayerClient;
 import com.layer.sdk.changes.LayerChangeEvent;
 import com.layer.sdk.listeners.LayerChangeEventListener;
@@ -29,10 +28,15 @@ import com.layer.sdk.listeners.LayerPolicyListener;
 import com.layer.sdk.messaging.Conversation;
 import com.layer.sdk.messaging.Identity;
 import com.layer.sdk.policy.Policy;
-import com.layer.xdk.ui.identity.IdentityItemsListView;
+import com.layer.xdk.messenger.databinding.ActivityConversationSettingsBinding;
+import com.layer.xdk.messenger.util.Util;
+import com.layer.xdk.ui.identity.adapter.IdentityItemModel;
 import com.layer.xdk.ui.identity.IdentityItemsListViewModel;
 import com.layer.xdk.ui.recyclerview.OnItemClickListener;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,7 +44,6 @@ import java.util.Set;
 public class ConversationSettingsActivity extends AppCompatActivity implements LayerPolicyListener, LayerChangeEventListener {
     private EditText mConversationName;
     private Switch mShowNotifications;
-    private IdentityItemsListView mParticipantRecyclerView;
     private Button mLeaveButton;
     private Button mAddParticipantsButton;
 
@@ -57,7 +60,6 @@ public class ConversationSettingsActivity extends AppCompatActivity implements L
 
         mConversationName = binding.conversationName;
         mShowNotifications = binding.showNotificationsSwitch;
-        mParticipantRecyclerView = binding.participants;
         mLeaveButton = binding.leaveButton;
         mAddParticipantsButton = binding.addParticipantButton;
 
@@ -69,26 +71,30 @@ public class ConversationSettingsActivity extends AppCompatActivity implements L
         Set<Identity> participants = mConversation.getParticipants();
         participants.remove(App.getLayerClient().getAuthenticatedUser());
 
-        mItemsListViewModel = new IdentityItemsListViewModel(this, App.getLayerClient(), Util.getImageCacheWrapper());
-        mItemsListViewModel.setIdentities(participants);
+        mItemsListViewModel = LayerServiceLocatorManager.INSTANCE.getComponent().identityItemsListViewModel();
 
-        mItemsListViewModel.setItemClickListener(new OnItemClickListener<Identity>() {
+
+        List<Identity> sortedParticipants = getSortedParticipantList(participants);
+        mItemsListViewModel.useIdentities(sortedParticipants);
+
+        mItemsListViewModel.setItemClickListener(new OnItemClickListener<IdentityItemModel>() {
             @Override
-            public void onItemClick(final Identity item) {
+            public void onItemClick(final IdentityItemModel item) {
+                final Identity identity = item.getIdentity();
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(ConversationSettingsActivity.this)
-                        .setMessage(Util.getIdentityFormatter(getApplicationContext()).getDisplayName(item));
+                        .setMessage(Util.getIdentityFormatter().getDisplayName(identity));
 
                 if (mConversation.getParticipants().size() > 2) {
                     builder.setNeutralButton(R.string.alert_button_remove, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            mConversation.removeParticipants(item);
+                            mConversation.removeParticipants(identity);
                         }
                     });
                 }
 
-                final Policy blockPolicy = getBlockPolicy(App.getLayerClient(), item);
+                final Policy blockPolicy = getBlockPolicy(App.getLayerClient(), identity);
 
                 builder.setPositiveButton(blockPolicy == null ? R.string.alert_button_block : R.string.alert_button_unblock,
                         new DialogInterface.OnClickListener() {
@@ -96,7 +102,7 @@ public class ConversationSettingsActivity extends AppCompatActivity implements L
                             public void onClick(DialogInterface dialog, int which) {
                                 if (blockPolicy == null) {
                                     // Block
-                                    Policy policy = new Policy.Builder(Policy.PolicyType.BLOCK).sentByUserId(item.getUserId()).build();
+                                    Policy policy = new Policy.Builder(Policy.PolicyType.BLOCK).sentByUserId(identity.getUserId()).build();
                                     App.getLayerClient().addPolicy(policy);
                                 } else {
                                     App.getLayerClient().removePolicy(blockPolicy);
@@ -118,7 +124,7 @@ public class ConversationSettingsActivity extends AppCompatActivity implements L
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE || (event != null && event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                     String title = ((EditText) v).getText().toString().trim();
-                    Util.getConversationItemFormatter().setMetaDataTitleOnConversation(mConversation, title);
+                    Util.getConversationItemFormatter().setConversationMetadataTitle(mConversation, title);
                     Toast.makeText(v.getContext(), R.string.toast_group_name_updated, Toast.LENGTH_SHORT).show();
                     return true;
                 }
@@ -156,6 +162,29 @@ public class ConversationSettingsActivity extends AppCompatActivity implements L
         });
     }
 
+    @NonNull
+    private List<Identity> getSortedParticipantList(Set<Identity> participants) {
+        List<Identity> sortedParticipants = new ArrayList<>(participants);
+        Collections.sort(sortedParticipants, new Comparator<Identity>() {
+            @Override
+            public int compare(Identity o1, Identity o2) {
+                String displayName = o1.getDisplayName();
+                String otherDisplayName = o2.getDisplayName();
+                if (displayName == null && otherDisplayName == null) {
+                    return 0;
+                }
+                if (displayName == null) {
+                    return 1;
+                }
+                if (otherDisplayName == null) {
+                    return -1;
+                }
+                return displayName.compareTo(otherDisplayName);
+            }
+        });
+        return sortedParticipants;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -168,14 +197,6 @@ public class ConversationSettingsActivity extends AppCompatActivity implements L
     protected void onPause() {
         App.getLayerClient().unregisterPolicyListener(this).unregisterEventListener(this);
         super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mParticipantRecyclerView != null) {
-            mParticipantRecyclerView.onDestroy();
-        }
     }
 
     @Override
@@ -257,7 +278,8 @@ public class ConversationSettingsActivity extends AppCompatActivity implements L
             mLeaveButton.setVisibility(View.VISIBLE);
         }
 
-        mItemsListViewModel.setIdentities(participantsMinusMe);
+
+        mItemsListViewModel.useIdentities(getSortedParticipantList(participantsMinusMe));
     }
 
     private Policy getBlockPolicy(LayerClient client, Identity identity) {

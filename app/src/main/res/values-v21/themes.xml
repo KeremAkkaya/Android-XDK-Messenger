@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style
+        name="MessengerTheme"
+        parent="BaseMessengerTheme">
+
+        <item name="android:windowTransitionBackgroundFadeDuration">333</item>
+        <item name="android:windowContentTransitions">true</item>
+
+        <item name="android:windowSharedElementEnterTransition">@transition/bounds</item>
+        <item name="android:windowSharedElementExitTransition">@transition/bounds</item>
+
+        <item name="android:timePickerDialogTheme">@style/AlertDialog</item>
+        <item name="android:datePickerDialogTheme">@style/AlertDialog</item>
+        <item name="android:alertDialogTheme">@style/AlertDialog</item>
+    </style>
+
+    <style name="AlertDialog" parent="android:Theme.Material.Light.Dialog.Alert">
+        <item name="android:colorPrimary">@color/xdk_ui_dialog_primary</item>
+        <item name="android:colorAccent">@color/xdk_ui_dialog_accent</item>
+    </style>
+</resources>

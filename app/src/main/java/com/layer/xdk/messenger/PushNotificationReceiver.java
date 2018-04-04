@@ -274,7 +274,7 @@ public class PushNotificationReceiver extends BroadcastReceiver {
             Collections.sort(positions);
 
             // Construct notification
-            String conversationTitle = Util.getConversationItemFormatter().getConversationTitle(App.getLayerClient().getAuthenticatedUser(), conversation);
+            String conversationTitle = Util.getConversationItemFormatter().getConversationTitle(conversation);
 
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle().setBigContentTitle(conversationTitle);
             int i;
@@ -299,7 +299,7 @@ public class PushNotificationReceiver extends BroadcastReceiver {
                     .setContentTitle(conversationTitle)
                     .setContentText(collapsedSummary)
                     .setAutoCancel(true)
-                    .setLights(context.getResources().getColor(R.color.xdk_ui_action_bar_background), 100, 1900)
+                    .setLights(context.getResources().getColor(R.color.primary), 100, 1900)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setDefaults(NotificationCompat.DEFAULT_SOUND | NotificationCompat.DEFAULT_VIBRATE)
                     .setStyle(inboxStyle);
@@ -322,7 +322,7 @@ public class PushNotificationReceiver extends BroadcastReceiver {
                     .setContentTitle(context.getString(R.string.push_notification_no_content_title))
                     .setContentText(text)
                     .setAutoCancel(true)
-                    .setLights(context.getResources().getColor(R.color.xdk_ui_action_bar_background), 100, 1900)
+                    .setLights(context.getResources().getColor(R.color.primary), 100, 1900)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setDefaults(NotificationCompat.DEFAULT_SOUND | NotificationCompat.DEFAULT_VIBRATE);
 

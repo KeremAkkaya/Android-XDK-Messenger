@@ -3,8 +3,11 @@ package com.layer.xdk.messenger;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -27,17 +30,16 @@ import com.layer.sdk.messaging.ConversationOptions;
 import com.layer.sdk.messaging.Identity;
 import com.layer.sdk.messaging.LayerObject;
 import com.layer.sdk.messaging.Message;
+import com.layer.xdk.messenger.addressbar.AddressBar;
 import com.layer.xdk.messenger.databinding.ActivityMessagesListBinding;
 import com.layer.xdk.messenger.util.Util;
-import com.layer.xdk.ui.AddressBar;
 import com.layer.xdk.ui.composebar.ComposeBar;
-import com.layer.xdk.ui.conversation.ConversationView;
 import com.layer.xdk.ui.conversation.ConversationViewModel;
 import com.layer.xdk.ui.message.file.FileSender;
 import com.layer.xdk.ui.message.location.CurrentLocationSender;
+import com.layer.xdk.ui.message.model.MessageModel;
 import com.layer.xdk.ui.message.sender.CameraSender;
 import com.layer.xdk.ui.message.sender.GallerySender;
-import com.layer.xdk.ui.message.model.MessageModel;
 import com.layer.xdk.ui.message.text.RichTextSender;
 import com.layer.xdk.ui.recyclerview.OnItemLongClickListener;
 
@@ -49,7 +51,6 @@ public class MessagesListActivity extends AppCompatActivity {
     private Conversation mConversation;
 
     private AddressBar mAddressBar;
-    private ConversationView mConversationView;
     private ComposeBar mComposeBar;
     private IdentityChangeListener mIdentityChangeListener;
     private ConversationViewModel mConversationViewModel;
@@ -156,6 +157,10 @@ public class MessagesListActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_messages_list, menu);
+
+        MenuItem settings = menu.findItem(R.id.action_details);
+        Drawable icon = settings.getIcon();
+        DrawableCompat.setTint(icon, ContextCompat.getColor(this, android.R.color.white));
         return true;
     }
 
@@ -189,12 +194,12 @@ public class MessagesListActivity extends AppCompatActivity {
         mComposeBar.setTextSender(new RichTextSender(this, App.getLayerClient()));
         mComposeBar.addAttachmentSendersToDefaultAttachmentButton(
                 new CameraSender(R.string.xdk_ui_attachment_menu_camera,
-                        R.drawable.ic_photo_camera_white_24dp, this, App.getLayerClient(),
+                        R.drawable.ic_photo_camera_black_24dp, this, App.getLayerClient(),
                         getApplicationContext().getPackageName() + ".file_provider"),
-                new GallerySender(R.string.xdk_ui_attachment_menu_gallery, R.drawable.ic_photo_white_24dp, this, App.getLayerClient()),
+                new GallerySender(R.string.xdk_ui_attachment_menu_gallery, R.drawable.ic_photo_black_24dp, this, App.getLayerClient()),
                 new CurrentLocationSender(R.string.xdk_ui_attachment_menu_current_location,
-                        R.drawable.ic_place_white_24dp, this, App.getLayerClient(),
-                        Util.getIdentityFormatter(this)),
+                        R.drawable.ic_place_black_24dp, this, App.getLayerClient(),
+                        Util.getIdentityFormatter()),
                 new FileSender(this, App.getLayerClient(), R.string.xdk_ui_attachment_menu_file));
 
         mComposeBar.setOnMessageEditTextFocusChangeListener(new View.OnFocusChangeListener() {
@@ -209,13 +214,8 @@ public class MessagesListActivity extends AppCompatActivity {
     }
 
     private void setupConversation(Conversation conversation) {
-        mConversationView = mActivityMessagesListBinding.conversation;
-
-        mConversationViewModel = new ConversationViewModel(getApplicationContext(),
-                App.getLayerClient(),
-                Util.getImageCacheWrapper(),
-                Util.getDateFormatter(getApplicationContext()),
-                Util.getIdentityFormatter(this));
+        mConversationViewModel = LayerServiceLocatorManager.INSTANCE.getComponent()
+                .conversationViewModel();
 
         mConversationViewModel.getMessageItemsListViewModel().setItemLongClickListener(
                 new MessageModelLongClickListener());
@@ -284,7 +284,7 @@ public class MessagesListActivity extends AppCompatActivity {
             mActionBar.setTitle(R.string.title_select_conversation);
         } else {
             mActionBar.setTitle(Util.getConversationItemFormatter().getConversationTitle(
-                    App.getLayerClient().getAuthenticatedUser(), mConversation));
+                    mConversation));
         }
     }
 

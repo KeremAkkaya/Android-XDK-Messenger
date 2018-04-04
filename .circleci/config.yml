@@ -1,0 +1,173 @@
+version: 2
+
+references:
+
+  # Add defined pre-release repo URL to use when looking for dependencies
+  add_prerelease_env_vars: &add_prerelease_env_vars
+    run:
+      name: Exporting pre-release environment variables
+      command: echo 'export LAYER_PRERELEASE_REPO_URL=$PRERELEASE_REPO_URL' >> $BASH_ENV
+
+  # Standard configuration to use when building android artifacts
+  android_config: &android_config
+    working_directory: ~/workspace
+    environment:
+      JVM_OPTS: -Xmx3200m
+    docker:
+      - image: circleci/android:api-27-alpha
+
+  # Helper anchor to pull down the dependency cache
+  restore_cache: &restore_cache
+    restore_cache:
+      key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+
+  # Helper anchor to download the dependencies
+  download_dependencies: &download_dependencies
+    run:
+      name: Downloading dependencies
+      command: ./gradlew androidDependencies
+
+  # Helper anchor to store the dependencies
+  save_cache: &save_cache
+    save_cache:
+      paths:
+        - ~/.gradle
+      key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+
+  # Store report outputs from the build
+  store_reports: &store_reports
+    store_artifacts:
+      path: app/build/reports
+      destination: reports
+
+  # Store test result outputs from the build
+  store_test_results: &store_test_results
+    store_test_results:
+      path: app/build/test-results
+
+  # Store APK from the build
+  store_apk: &store_apk
+    store_artifacts:
+      path: app/build/outputs/apk
+      destination: apk
+
+  # Standard configuration to use for running tests in Test Lab
+  gcloud_config: &gcloud_config
+    working_directory: ~/workspace
+    docker:
+      - image: google/cloud-sdk:latest
+
+  # Copy and decode the gcloud credentials into the environment
+  setup_gcloud_creds: &setup_gcloud_creds
+    run:
+      name: Setting up Google Cloud credentials
+      command: echo $GCLOUD_CLIENT_SECRET | base64 -di > ${HOME}/client-secret.json
+
+  # Save APKs to use for instrumented tests in Test Lab
+  persist_debug_workspace: &persist_debug_workspace
+    persist_to_workspace:
+      root: ~/workspace
+      paths:
+        - app/build/outputs/apk
+
+  # Checkout and init submodule
+  init_xdk_submodule: &init_xdk_submodule
+    run:
+      name: Checking out submodule
+      command: git submodule sync && git submodule update --init
+
+  # Create google-services.json from env var
+  create_google_services_json: &create_google_services_json
+    run:
+      name: Creating google-services.json
+      command: echo $GOOGLE_SERVICES_JSON | base64 -di > ~/workspace/app/google-services.json
+
+  # Create LayerConfiguration.json from env var
+  create_layer_config_json: &create_layer_config_json
+    run:
+      name: Creating LayerConfiguration.json
+      command: echo $LAYER_CONFIGURATION_JSON | base64 -di > ~/workspace/app/src/main/assets/LayerConfiguration.json
+
+jobs:
+  build_debug:
+    <<: *android_config
+    steps:
+      - *add_prerelease_env_vars
+      - checkout
+      - *init_xdk_submodule
+      - *create_google_services_json
+      - *create_layer_config_json
+      - *restore_cache
+      - *download_dependencies
+      - *save_cache
+      - run:
+          name: Building debug APK
+          command: ./gradlew assembleDebug
+      - run:
+          name: Building test APK
+          command: ./gradlew assembleAndroidTest
+      - run:
+          name: Running lint
+          command: ./gradlew lint
+      - run:
+          name: Running unit tests
+          command: ./gradlew test
+      - *store_reports
+      - *store_test_results
+      - *persist_debug_workspace
+
+  build_release:
+    <<: *android_config
+    steps:
+      - checkout
+      - *init_xdk_submodule
+      - *create_google_services_json
+      - *create_layer_config_json
+      - *restore_cache
+      - *download_dependencies
+      - *save_cache
+      - run:
+          name: Building release APK
+          command: ./gradlew assembleRelease
+      - *store_apk
+
+  run_instrumented_tests:
+    <<: *gcloud_config
+    steps:
+      - attach_workspace:
+          at: ~/workspace
+      - *setup_gcloud_creds
+      - run:
+          name: Setting up Google Cloud project
+          command: gcloud config set project layer-build
+      - run:
+          name: Authenticating with Google Cloud
+          command: gcloud auth activate-service-account firebase-adminsdk-3boog@layer-build.iam.gserviceaccount.com --key-file ${HOME}/client-secret.json
+      - run:
+          name: Running instrumented test on Firebase Test Lab
+          command: >-
+            gcloud firebase test android run
+            --app app/build/outputs/apk/debug/app-debug.apk
+            --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+            --device model=Nexus5X,version=26,locale=en,orientation=portrait
+            --device model=serranolte,version=19,locale=en,orientation=portrait
+            --device model=sailfish,version=25,locale=en,orientation=portrait
+            --timeout 1m
+      - run:
+          name: Creating directory to store test results
+          command: mkdir firebase
+      - run:
+          name: Downloading results
+          command: gsutil -m cp -r -U "`gsutil ls gs://test-lab-ibyywiy6hy2yc-hmfv66tu8vwya | tail -1`*" ~/workspace/firebase/
+      - store_artifacts:
+          path: firebase
+          destination: firebase
+
+workflows:
+  version: 2
+  build_debug_and_test:
+    jobs:
+      - build_debug
+      - run_instrumented_tests:
+          requires:
+            - build_debug
