@@ -9,7 +9,7 @@ android {
         applicationId "com.layer.xdk.messenger"
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 3
+        versionCode 4
         versionName "$versionCode"
         testInstrumentationRunner 'com.layer.xdk.messenger.testrunner.TestButlerRunner'
         vectorDrawables.useSupportLibrary = true
