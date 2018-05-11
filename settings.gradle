@@ -1,4 +1,3 @@
-include ':app'
-
-include ':xdk-ui'
+include ':app', ':xdk-test-common', ':xdk-ui'
+project(':xdk-test-common').projectDir = new File('Android-XDK/test-common')
 project(':xdk-ui').projectDir = new File('Android-XDK/ui')

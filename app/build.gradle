@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 apply from: "$rootDir/tools/tools.gradle"
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId "com.layer.xdk.messenger"
-        minSdkVersion 14
-        targetSdkVersion 27
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 5
         versionName "$versionCode"
         testInstrumentationRunner 'com.layer.xdk.messenger.testrunner.TestButlerRunner'
@@ -35,7 +35,7 @@ android {
 
     // Data binding is still trying to use 25.2.0 for some reason
     configurations.all {
-        resolutionStrategy.force 'com.android.support:support-v4:27.1.0'
+        resolutionStrategy.force 'com.android.support:support-v4:' + rootProject.ext.supportLibVersion
     }
 }
 
@@ -46,14 +46,14 @@ dependencies {
     implementation project(':xdk-ui')
 
     implementation "com.google.firebase:firebase-messaging:11.8.0"
-    implementation 'com.android.support:support-core-utils:27.1.0'
-    implementation 'com.android.support:recyclerview-v7:27.1.0'
-    implementation 'com.android.support:appcompat-v7:27.1.0'
-    implementation 'com.android.support:design:27.1.0'
+    implementation 'com.android.support:support-core-utils:' + rootProject.ext.supportLibVersion
+    implementation 'com.android.support:recyclerview-v7:' + rootProject.ext.supportLibVersion
+    implementation 'com.android.support:appcompat-v7:' + rootProject.ext.supportLibVersion
+    implementation 'com.android.support:design:' + rootProject.ext.supportLibVersion
     implementation 'com.squareup.picasso:picasso:2.5.2'
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.android.support:multidex:' + rootProject.ext.multidexVersion
 
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:' + rootProject.ext.espressoVersion, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
