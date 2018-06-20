@@ -2,11 +2,11 @@ version: 2
 
 references:
 
-  # Add defined pre-release repo URL to use when looking for dependencies
-  add_prerelease_env_vars: &add_prerelease_env_vars
+  # Create gradle.properties from env var
+  create_debug_gradle_properties: &create_debug_gradle_properties
     run:
-      name: Exporting pre-release environment variables
-      command: echo 'export LAYER_PRERELEASE_REPO_URL=$PRERELEASE_REPO_URL' >> $BASH_ENV
+      name: Creating debug version of gradle.properties
+      command: echo $DEBUG_GRADLE_PROPERTIES | base64 -di > ~/workspace/gradle.properties
 
   # Standard configuration to use when building android artifacts
   android_config: &android_config
@@ -92,8 +92,8 @@ jobs:
   build_debug:
     <<: *android_config
     steps:
-      - *add_prerelease_env_vars
       - checkout
+      - *create_debug_gradle_properties
       - *init_xdk_submodule
       - *create_google_services_json
       - *create_layer_config_json
