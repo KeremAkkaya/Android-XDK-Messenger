@@ -30,8 +30,9 @@ import com.layer.sdk.messaging.Identity;
 import com.layer.sdk.policy.Policy;
 import com.layer.xdk.messenger.databinding.ActivityConversationSettingsBinding;
 import com.layer.xdk.messenger.util.Util;
-import com.layer.xdk.ui.identity.adapter.IdentityItemModel;
+import com.layer.xdk.ui.XdkUiDependencyManager;
 import com.layer.xdk.ui.identity.IdentityItemsListViewModel;
+import com.layer.xdk.ui.identity.adapter.IdentityItemModel;
 import com.layer.xdk.ui.recyclerview.OnItemClickListener;
 
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class ConversationSettingsActivity extends AppCompatActivity implements L
         Set<Identity> participants = mConversation.getParticipants();
         participants.remove(App.getLayerClient().getAuthenticatedUser());
 
-        mItemsListViewModel = LayerServiceLocatorManager.INSTANCE.getComponent().identityItemsListViewModel();
+        mItemsListViewModel = XdkUiDependencyManager.INSTANCE.getXdkUiComponent().identityItemsListViewModel();
 
 
         List<Identity> sortedParticipants = getSortedParticipantList(participants);

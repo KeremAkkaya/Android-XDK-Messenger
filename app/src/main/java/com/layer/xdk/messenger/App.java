@@ -12,6 +12,7 @@ import com.layer.xdk.messenger.util.AuthenticationProvider;
 import com.layer.xdk.messenger.util.CustomEndpoint;
 import com.layer.xdk.messenger.util.LayerAuthenticationProvider;
 import com.layer.xdk.messenger.util.Log;
+import com.layer.xdk.ui.XdkUiDependencyManager;
 import com.layer.xdk.ui.message.LegacyMimeTypes;
 import com.layer.xdk.ui.util.Util;
 import com.squareup.picasso.Picasso;
@@ -71,7 +72,7 @@ public class App extends MultiDexApplication {
         // Allow the LayerClient to track app state
         LayerClient.applicationCreated(this);
 
-        LayerServiceLocatorManager.INSTANCE.getInstance().setAppContext(this);
+        XdkUiDependencyManager.INSTANCE.getServiceLocator().setAppContext(this);
     }
 
     public static Application getInstance() {
@@ -146,7 +147,7 @@ public class App extends MultiDexApplication {
      * @return New or existing LayerClient, or `null` if a LayerClient could not be constructed.
      */
     public static LayerClient getLayerClient() {
-        LayerClient layerClient = LayerServiceLocatorManager.INSTANCE.getInstance().getLayerClient();
+        LayerClient layerClient = XdkUiDependencyManager.INSTANCE.getServiceLocator().getLayerClient();
         if (layerClient == null) {
             boolean telemetryEnabled;
             SharedPreferences sharedPreferences = sInstance.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
@@ -182,7 +183,7 @@ public class App extends MultiDexApplication {
             /* Register AuthenticationProvider for handling authentication challenges */
             layerClient.registerAuthenticationListener(getAuthenticationProvider());
 
-            LayerServiceLocatorManager.INSTANCE.getInstance().setLayerClient(layerClient);
+            XdkUiDependencyManager.INSTANCE.getServiceLocator().setLayerClient(layerClient);
         }
         return layerClient;
     }

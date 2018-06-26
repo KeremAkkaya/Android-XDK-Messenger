@@ -31,6 +31,7 @@ import com.layer.xdk.messenger.util.ConversationSettingsTaskLoader;
 import com.layer.xdk.messenger.util.ConversationSettingsTaskLoader.Results;
 import com.layer.xdk.messenger.util.Log;
 import com.layer.xdk.messenger.util.Util;
+import com.layer.xdk.ui.XdkUiDependencyManager;
 import com.layer.xdk.ui.avatar.AvatarView;
 import com.layer.xdk.ui.presence.PresenceView;
 
@@ -102,9 +103,8 @@ public class AppSettingsActivity extends BaseActivity implements LayerConnection
         mDiskAllowance = (TextView) findViewById(R.id.disk_allowance);
         mAutoDownloadMimeTypes = (TextView) findViewById(R.id.auto_download_mime_types);
 
-
-        mAvatarView.setIdentityFormatter(LayerServiceLocatorManager.INSTANCE.getComponent().identityFormatter());
-        mAvatarView.setImageCacheWrapper(LayerServiceLocatorManager.INSTANCE.getComponent().imageCacheWrapper());
+        mAvatarView.setIdentityFormatter(XdkUiDependencyManager.INSTANCE.getServiceLocator().getIdentityFormatter());
+        mAvatarView.setImageCacheWrapper(XdkUiDependencyManager.INSTANCE.getServiceLocator().getImageCacheWrapper());
 
         getSupportLoaderManager().initLoader(R.id.setting_loader_id, null, this);
 

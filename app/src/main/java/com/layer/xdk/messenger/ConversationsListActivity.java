@@ -17,6 +17,7 @@ import com.layer.sdk.LayerClient;
 import com.layer.sdk.messaging.Conversation;
 import com.layer.xdk.messenger.databinding.ActivityConversationsListBinding;
 import com.layer.xdk.messenger.util.Log;
+import com.layer.xdk.ui.XdkUiDependencyManager;
 import com.layer.xdk.ui.conversation.ConversationItemsListViewModel;
 import com.layer.xdk.ui.conversation.adapter.ConversationItemModel;
 import com.layer.xdk.ui.recyclerview.OnItemClickListener;
@@ -40,8 +41,7 @@ public class ConversationsListActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         ConversationItemsListViewModel conversationItemsListViewModel =
-                LayerServiceLocatorManager.INSTANCE
-                        .getComponent()
+                XdkUiDependencyManager.INSTANCE.getXdkUiComponent()
                         .conversationItemsListViewModel();
         conversationItemsListViewModel.useDefaultQuery();
         conversationItemsListViewModel.setItemClickListener(new OnItemClickListener<ConversationItemModel>() {

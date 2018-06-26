@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.layer.sdk.messaging.Identity;
-import com.layer.xdk.messenger.LayerServiceLocatorManager;
+import com.layer.xdk.ui.XdkUiDependencyManager;
 import com.layer.xdk.ui.conversation.ConversationItemFormatter;
 import com.layer.xdk.ui.identity.IdentityFormatter;
 import com.layer.xdk.ui.message.image.cache.ImageCacheWrapper;
@@ -34,15 +34,15 @@ public class Util {
      * Replace the implementation with whatever Image Caching library you wish to use.
      */
     public static ImageCacheWrapper getImageCacheWrapper() {
-        return LayerServiceLocatorManager.INSTANCE.getComponent().imageCacheWrapper();
+        return XdkUiDependencyManager.INSTANCE.getServiceLocator().getImageCacheWrapper();
     }
 
     public static IdentityFormatter getIdentityFormatter() {
-        return LayerServiceLocatorManager.INSTANCE.getComponent().identityFormatter();
+        return XdkUiDependencyManager.INSTANCE.getServiceLocator().getIdentityFormatter();
     }
 
     public static ConversationItemFormatter getConversationItemFormatter() {
-        return LayerServiceLocatorManager.INSTANCE.getComponent().conversationItemFormatter();
+        return XdkUiDependencyManager.INSTANCE.getServiceLocator().getConversationItemFormatter();
     }
 
     public static void copyToClipboard(Context context, int stringResId, String content) {

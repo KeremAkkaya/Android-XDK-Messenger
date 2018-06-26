@@ -30,9 +30,9 @@ import com.layer.sdk.query.Predicate;
 import com.layer.sdk.query.Query;
 import com.layer.sdk.query.RecyclerViewController;
 import com.layer.sdk.query.SortDescriptor;
-import com.layer.xdk.messenger.LayerServiceLocatorManager;
 import com.layer.xdk.messenger.R;
 import com.layer.xdk.messenger.util.Util;
+import com.layer.xdk.ui.XdkUiDependencyManager;
 import com.layer.xdk.ui.avatar.AvatarStyle;
 import com.layer.xdk.ui.avatar.AvatarView;
 import com.layer.xdk.ui.message.image.cache.ImageCacheWrapper;
@@ -457,8 +457,8 @@ public class AddressBar extends LinearLayout {
 
             // Initialize participant data
             mName.setText(Util.getDisplayName(participant));
-            mAvatarView.setIdentityFormatter(LayerServiceLocatorManager.INSTANCE.getComponent().identityFormatter());
-            mAvatarView.setImageCacheWrapper(LayerServiceLocatorManager.INSTANCE.getComponent().imageCacheWrapper());
+            mAvatarView.setIdentityFormatter(XdkUiDependencyManager.INSTANCE.getServiceLocator().getIdentityFormatter());
+            mAvatarView.setImageCacheWrapper(XdkUiDependencyManager.INSTANCE.getServiceLocator().getImageCacheWrapper());
             mAvatarView.setParticipants(participant);
             mPresenceView.setParticipants(participant);
             mAvatarView.setStyle(mAvatarStyle);
@@ -612,10 +612,10 @@ public class AddressBar extends LinearLayout {
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             ViewHolder viewHolder = new ViewHolder(parent);
 
-            viewHolder.mAvatarView.setIdentityFormatter(LayerServiceLocatorManager.INSTANCE.
-                    getComponent().identityFormatter());
-            viewHolder.mAvatarView.setImageCacheWrapper(LayerServiceLocatorManager.INSTANCE
-                    .getComponent().imageCacheWrapper());
+            viewHolder.mAvatarView.setIdentityFormatter(XdkUiDependencyManager.INSTANCE
+                    .getServiceLocator().getIdentityFormatter());
+            viewHolder.mAvatarView.setImageCacheWrapper(XdkUiDependencyManager.INSTANCE
+                    .getServiceLocator().getImageCacheWrapper());
             viewHolder.mAvatarView.setStyle(mAvatarStyle);
             return viewHolder;
         }

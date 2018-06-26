@@ -33,6 +33,7 @@ import com.layer.sdk.messaging.Message;
 import com.layer.xdk.messenger.addressbar.AddressBar;
 import com.layer.xdk.messenger.databinding.ActivityMessagesListBinding;
 import com.layer.xdk.messenger.util.Util;
+import com.layer.xdk.ui.XdkUiDependencyManager;
 import com.layer.xdk.ui.composebar.ComposeBar;
 import com.layer.xdk.ui.conversation.ConversationViewModel;
 import com.layer.xdk.ui.message.file.FileSender;
@@ -214,8 +215,9 @@ public class MessagesListActivity extends AppCompatActivity {
     }
 
     private void setupConversation(Conversation conversation) {
-        mConversationViewModel = LayerServiceLocatorManager.INSTANCE.getComponent()
+        mConversationViewModel = XdkUiDependencyManager.INSTANCE.getXdkUiComponent()
                 .conversationViewModel();
+        mConversationViewModel.addLifecycleObservers(this);
 
         mConversationViewModel.getMessageItemsListViewModel().setItemLongClickListener(
                 new MessageModelLongClickListener());
