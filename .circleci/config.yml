@@ -150,7 +150,7 @@ jobs:
             --app app/build/outputs/apk/debug/app-debug.apk
             --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
             --device model=Nexus5X,version=26,locale=en,orientation=portrait
-            --device model=serranolte,version=19,locale=en,orientation=portrait
+            --device model=victara,version=19,locale=en,orientation=portrait
             --device model=sailfish,version=25,locale=en,orientation=portrait
             --timeout 1m
       - run:
