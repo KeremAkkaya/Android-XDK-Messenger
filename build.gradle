@@ -57,6 +57,7 @@ project.ext {
     daggerVersion = "2.15"
     layerSdkVersion = "4.1.0-pre"
     mockitoVersion = "2.8.47"
+    archLifecycleVersion = "1.1.1"
 }
 
 subprojects {
