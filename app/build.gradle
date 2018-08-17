@@ -33,9 +33,12 @@ android {
         }
     }
 
-    // Data binding is still trying to use 25.2.0 for some reason
+
+    // Resolve mismatch of dependencies due to data binding/espresso/etc
     configurations.all {
         resolutionStrategy.force 'com.android.support:support-v4:' + rootProject.ext.supportLibVersion
+        resolutionStrategy.force 'com.android.support:recyclerview-v7:' + rootProject.ext.supportLibVersion
+        resolutionStrategy.force 'android.arch.lifecycle:viewmodel:' + rootProject.ext.archLifecycleVersion
     }
 }
 
