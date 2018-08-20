@@ -3,7 +3,6 @@ apply from: "$rootDir/tools/tools.gradle"
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId "com.layer.xdk.messenger"
