@@ -45,8 +45,8 @@ project.ext {
     println('PREDEX ' + (project.ext.preDexLibs ? 'ENABLED' : 'DISABLED')) // goes to build log or console output
 
     minSdkVersion = 14
-    targetSdkVersion = 28
-    compileSdkVersion = 28
+    targetSdkVersion = 27
+    compileSdkVersion = 27
 
     supportLibVersion = "27.1.1"
     espressoVersion = "3.0.2"
