@@ -69,6 +69,8 @@ public class ConversationSettingsActivity extends AppCompatActivity implements L
         mConversation = App.getLayerClient().getConversation(conversationId);
         if (mConversation == null && !isFinishing()) finish();
 
+        initializeMarkAsReadButton();
+
         Set<Identity> participants = mConversation.getParticipants();
         participants.remove(App.getLayerClient().getAuthenticatedUser());
 
@@ -302,5 +304,20 @@ public class ConversationSettingsActivity extends AppCompatActivity implements L
     @Override
     public void onChangeEvent(LayerChangeEvent layerChangeEvent) {
         refresh();
+    }
+
+    private void initializeMarkAsReadButton() {
+        Button markAllReadButton = findViewById(R.id.mark_all_read_button);
+        if (mConversation.isReadReceiptsEnabled()) {
+            markAllReadButton.setVisibility(View.VISIBLE);
+            markAllReadButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mConversation.markAllMessagesAsRead();
+                }
+            });
+        } else {
+            markAllReadButton.setVisibility(View.GONE);
+        }
     }
 }

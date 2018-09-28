@@ -22,4 +22,9 @@
         <item name="avatarTextStyle">normal</item>
     </style>
 
+    <style name="AppTheme.RedButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/red_button</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
 </resources>

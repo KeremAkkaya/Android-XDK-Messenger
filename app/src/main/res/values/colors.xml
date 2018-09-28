@@ -5,4 +5,5 @@
     <color name="primary">#FF19A5E4</color>
     <color name="primary_dark">#FF1094D0</color>
     <color name="text_white">@android:color/white</color>
+    <color name="red_button">#FFFF5252</color>
 </resources>

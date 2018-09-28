@@ -62,6 +62,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 
     androidTestImplementation "com.linkedin.testbutler:test-butler-library:$versions.testButler"
+    androidTestImplementation 'com.android.support.test:rules:' + rootProject.ext.rulesVersion
 }
 
 apply plugin: 'com.google.gms.google-services'
