@@ -4,15 +4,9 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.4'
+        classpath 'com.android.tools.build:gradle:3.2.0'
         classpath 'com.google.gms:google-services:3.2.0'
     }
-}
-
-// Setting version to be used for TestButler, which is there to help the emulator on
-// CI system not cause random failures
-ext {
-    testButler = '1.3.1'
 }
 
 def preReleaseRepoUrl = findProperty("preReleaseRepoUrl")

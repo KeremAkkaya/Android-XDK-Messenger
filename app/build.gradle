@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply from: "$rootDir/tools/tools.gradle"
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -10,7 +9,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 12
         versionName "$versionCode"
-        testInstrumentationRunner 'com.layer.xdk.messenger.testrunner.TestButlerRunner'
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
 
         // Multidex is needed as test libraries pushes the dex count over the limit
@@ -32,12 +31,12 @@ android {
         }
     }
 
-
     // Resolve mismatch of dependencies due to data binding/espresso/etc
     configurations.all {
         resolutionStrategy.force 'com.android.support:support-v4:' + rootProject.ext.supportLibVersion
         resolutionStrategy.force 'com.android.support:recyclerview-v7:' + rootProject.ext.supportLibVersion
         resolutionStrategy.force 'android.arch.lifecycle:viewmodel:' + rootProject.ext.archLifecycleVersion
+        resolutionStrategy.force 'com.android.support:exifinterface:' + rootProject.ext.supportLibVersion
     }
 }
 
@@ -52,7 +51,7 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:' + rootProject.ext.supportLibVersion
     implementation 'com.android.support:appcompat-v7:' + rootProject.ext.supportLibVersion
     implementation 'com.android.support:design:' + rootProject.ext.supportLibVersion
-    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.android.support:multidex:' + rootProject.ext.multidexVersion
 
     androidTestImplementation('com.android.support.test.espresso:espresso-core:' + rootProject.ext.espressoVersion, {
@@ -61,7 +60,6 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
 
-    androidTestImplementation "com.linkedin.testbutler:test-butler-library:$versions.testButler"
     androidTestImplementation 'com.android.support.test:rules:' + rootProject.ext.rulesVersion
 }
 
