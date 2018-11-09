@@ -7,7 +7,7 @@ android {
         applicationId "com.layer.xdk.messenger"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 13
+        versionCode 14
         versionName "$versionCode"
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
